@@ -1,0 +1,472 @@
+import discord
+from discord.ext import commands
+import os
+
+from discord.ext.commands.context import Context
+from discord.file import File
+
+bot = commands.Bot(command_prefix='y!',
+                   description="This is a powerful and exclusive bot used for the OMB server.")
+
+
+
+
+@bot.command()
+async def hi(ctx):
+    await ctx.send('Hello!')
+
+
+@bot.command()
+async def bye(ctx):
+    await ctx.send('Bye')
+
+
+@bot.command()
+async def goodmorning(ctx):
+    await ctx.send('Goodmorning!')
+
+
+@bot.command()
+async def goodnight(ctx):
+    await ctx.send('Night night!')
+
+
+@bot.command()
+async def sum(ctx, numOne: int, numTwo: int):
+    await ctx.send(numOne + numTwo)
+
+
+@bot.command()
+async def subtract(ctx, numOne: int, numTwo: int):
+    await ctx.send(numOne - numTwo)
+
+
+@bot.command()
+async def multiply(ctx, numOne: int, numTwo: int):
+    await ctx.send(numOne * numTwo)
+
+
+@bot.command()
+async def divide(ctx, numOne: int, numTwo: int):
+    await ctx.send(numOne / numTwo)
+
+
+@bot.command(pass_context=True)
+async def update(ctx):
+    embed = discord.Embed(
+        title="Hey Everyone!",
+        description="I am now live 24/7 for all discord servers. Contact an admin to know how to invite me. Happy beeping!",
+        color=0x0072ff)
+    embed.set_footer(text="Made and powered by OMB")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def honk(ctx):
+    embed = discord.Embed(title="Honk!")
+
+    embed.set_footer(text="Made and powered by Fxxris")
+    embed.set_image(url="https://c.tenor.com/HpQzsDBu5QwAAAAC/goose-honk.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def intro(ctx):
+    embed = discord.Embed(
+        title="Hello!",
+        description="Hi everyone, I am BeepBoop and I manage the proper updates and posts for the owner. Be sure to select your ping roles as per your wish in the reactionroles channel",
+        color=0x0072ff)
+    embed.set_footer(text="Made and powered by OMB")
+    await ctx.send(embed=embed)
+
+ 
+@bot.command()
+async def info(ctx):
+    embed = discord.Embed(title=f"{ctx.guild.name}",
+                          color=discord.Color.blue())
+    embed.add_field(name="Server created at", value=f"{ctx.guild.created_at}")
+    embed.add_field(name="Server Owner", value=f"{ctx.guild.owner}")
+    embed.add_field(name="Server Region", value=f"{ctx.guild.region}")
+    embed.add_field(name="Server ID", value=f"{ctx.guild.id}")
+    embed.set_thumbnail(
+        url="https://i.pinimg.com/originals/82/89/97/828997803ed802e0f075188c93fdf061.png"
+    )
+
+    await ctx.send(embed=embed)
+
+
+# Events
+@bot.event
+async def on_ready():
+    await bot.change_presence(activity=discord.Streaming(
+        name="Tutorials", url="http://www.twitch.tv/Fxxris1"))
+    print('Hello!')
+
+
+@bot.listen()
+async def on_message(message):
+    if "tutorial" in message.content.lower():
+        await message.channel.send('This is that you want.')
+        await bot.process_commands(message)
+
+
+@bot.command()
+async def yeet(ctx):
+    embed = discord.Embed(
+        title="BeepBoop",
+        description='This bot was created by Fxxris',
+        color=discord.Colour.blue())
+    embed.set_footer(text='BeepBoop')
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def clear(ctx, amount=10):
+
+    channel = ctx.message.channel
+
+    messages = []
+
+    async for message in channel.history(limit=amount):
+
+        messages.append(message)
+
+    await channel.delete_messages(messages)
+    embed = discord.Embed(title="Clear text",
+                          description='Text has been deleted',
+                          color=discord.Colour.blue())
+    embed.set_footer(text='BeepBoop')
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def serverinfo(ctx):
+    server = ctx.guild
+    numberOfTextChannels = len(server.text_channels)
+    numberOfVoiceChannels = len(server.voice_channels)
+    serverDescription = server.description
+    numberOfPerson = server.member_count
+    serverName = server.name
+    embed = discord.Embed(
+        title="Server Info",
+        description=f"The server **{serverName}** has **{numberOfPerson}** members! \nServer description - **{serverDescription}\nText channels - **{numberOfTextChannels}** Voice Channels - **{numberOfVoiceChannels}."
+    )
+    embed.set_footer(text='Bye')
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def rickroll(ctx):
+    embed = discord.Embed(title="Get rickrolled")
+    embed.set_footer(text="Made and powered by Fxxris")
+    embed.set_image(
+        url="https://c.tenor.com/x8v1oNUOmg4AAAAd/rickroll-roll.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def support(ctx):
+    embed = discord.Embed(title="Support",
+                          description="Email: Sike",
+                          color=0x0072ff)
+    embed.set_footer(text="Thanks!")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def love(ctx):
+    embed = discord.Embed(title="I love you!")
+
+    embed.set_footer(text="Made and powered by Fxxris")
+    embed.set_image(url="https://c.tenor.com/as7TwvDQMlcAAAAi/love.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def purge(ctx, number):
+    if ctx.message.author.server_permissions.manage_messages:
+        mgs = []
+        number = int(number)
+        async for x in bot.logs_from(ctx.message.channel, limit=number):
+            mgs.append(x)
+        await bot.delete_messages(mgs)
+    else:
+        embed = discord.Embed(
+            title="Permission Denied.",
+            description="You don't have permission to use this command.",
+            color=0xff0000)
+        embed.set_footer(text="Done!")
+        await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def moan(ctx):
+    embed = discord.Embed(title="Ohhhh yeah")
+
+    embed.set_footer(text="Made and powered by Fxxris")
+    embed.set_image(url="https://c.tenor.com/BXUWc7ATKUYAAAAC/moan-omg.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def seizure(ctx):
+    embed = discord.Embed(title="Oh no I had a seizure!")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://c.tenor.com/Nv7dHwZLPGQAAAAC/shake-it-off-dance.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def horny(ctx):
+    embed = discord.Embed(title="Get bonked")
+
+    embed.set_footer(text="Made and powered by Fxxris")
+    embed.set_image(
+        url="https://c.tenor.com/5O-Qt_JfZUQAAAAC/kendo-shinai.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command()
+async def cuss(ctx):
+    await ctx.send("https://cdn.discordapp.com/attachments/792975802269958154/903557721540919316/video0_1.mp4")
+
+@bot.command()
+async def gluten(ctx: Context):
+    await ctx.send(file=File("./media/gluten.mp4"))
+
+@bot.command()
+async def gandu(ctx: Context):
+    await ctx.send(file=File("./media/gandu.mp4"))
+
+@bot.command()
+async def blm(ctx: Context):
+    await ctx.send(file=File("./media/blm.mp4"))
+
+@bot.command()
+async def messi(ctx: Context):
+    await ctx.send(file=File("./media/dont_mess_with_messi.mp4"))
+
+@bot.command()
+async def emotionaldamage(ctx: Context):
+    await ctx.send(file=File("./media/EMOTIONAL DAMAGE BASS BOOSTED.mp4"))
+
+@bot.command()
+async def ronaldo(ctx: Context):
+    await ctx.send(file=File("./media/Ronaldo Siu.mp4"))
+
+
+def ban_check(ctx, member):
+    return ctx.author.top_role > member.top_role
+
+
+@bot.command()
+@commands.has_permissions(ban_members=True)
+async def ban(ctx, member: discord.Member, *, reason=None):
+    if not ban_check(ctx, member):
+        await ctx.send("Failed to ban, lacking role hierarchy.")
+        return
+
+    await ctx.guild.ban(member, reason=reason)
+    await ctx.send(f"Banned {member} for reason *{reason}*")
+
+
+@bot.command()
+@commands.has_permissions(ban_members=True)
+async def unban(ctx, member, *, reason=None):
+    await ctx.guild.unban(member, reason=reason)
+    await ctx.send(f"Unbanned member with ID: {member}")
+
+
+@bot.command(pass_context=True)
+async def dd(ctx):
+    embed = discord.Embed(title="AYOOOO")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://c.tenor.com/Kl1RWj007bEAAAAd/danny-devito-walking-away.gif")
+    await ctx.send(embed=embed)
+
+@bot.command(pass_context=True)
+async def genderrole(ctx):
+    embed = discord.Embed(title="Gender Roles")
+    embed.add_field(name="He/Him", value=f"♂️")             
+    embed.add_field(name="She/Her", value=f"♀️") 
+    embed.add_field(name="They/Them", value=f"⚧") 
+    embed.set_footer(text="Made and powered by OMB Staff")
+  
+    await ctx.send(embed=embed)  
+
+@bot.command(pass_context=True)
+async def graderole(ctx):
+    embed = discord.Embed(title="Grade Roles")
+    embed.add_field(name="Grade 7", value=f":seven:")           
+    embed.add_field(name="Grade 8", value=f"8️⃣") 
+    embed.add_field(name="Grade 9", value=f"9️⃣")
+    embed.add_field(name="Grade 10", value=f"🔟")
+    embed.add_field(name="Grade 11", value=f"1️⃣")
+    embed.add_field(name="Grade 12", value=f"2️⃣")  
+    
+    embed.set_footer(text="Made and powered by OMB Staff")
+  
+    await ctx.send(embed=embed)  
+
+
+@bot.command(pass_context=True)
+async def board(ctx):
+    embed = discord.Embed(title="CBSE or CAIE?")
+    embed.add_field(name="CBSE", value=f"🔵")           
+    embed.add_field(name="CAIE", value=f"🔴")  
+    
+    embed.set_footer(text="Made and powered by OMB Staff")
+  
+    await ctx.send(embed=embed) 
+
+  
+
+@bot.command(pass_context=True)
+async def pingrole(ctx):
+    embed = discord.Embed(title="Ping Role", description="This role pings you for any server updates, notifcation, etc")
+    #embed.add_field(name="What is this role?", value=f"")       
+    
+    embed.set_footer(text="Made and powered by OMB Staff")
+  
+    await ctx.send(embed=embed)  
+
+
+  
+embed = discord.Embed(
+        title="Hey Everyone!",
+        description="I am now live 24/7 for all discord servers. Contact an admin to know how to invite me. Happy beeping!",
+        color=0x0072ff)
+
+@bot.command(pass_context=True)
+async def rules(ctx):
+    embed = discord.Embed(title="Server Rules", description="Please adhere to these rules. Any violation will result in severe action being taken.",
+        color=0x0072ff)
+    embed.add_field(name="1", value=f"Treat everyone with respect. Absolutely no racism, sexism, or hate speech will be tolerated.")
+    embed.add_field(name="2", value=f"2️. No spam or self-promotion. (server invites, spam, etc.) ")
+    embed.add_field(name="3", value=f"No NSFW or obscene content.")
+    embed.add_field(name="4", value=f" Do not be disruptive in voice chats. Being loud, obnoxious, blasting music in the background, or any other form of distraction will get you muted both in text and voice chats.")
+    embed.add_field(name="5", value=f"Do not bypass the filter that is in place. If your message is deleted as soon as you send it, that means it contained a blacklisted word.")
+    embed.add_field(name="6", value=f"NSFW nicknames, profile pictures or bio descriptions will not be tolerated. Please follow requests from the staff to change anything needed.")
+    embed.add_field(name="Important-", value=f"Staff Members have the final say. Do not argue with them.")
+    embed.set_footer(text="Made and powered by OMB Staff")
+
+    await ctx.send(embed=embed) 
+
+@bot.command(pass_context=True)
+async def website(ctx):
+    embed = discord.Embed(title="School Website", description="https://www.openminds-hyderabad.com/index.php",
+        color=0x0072ff)
+    await ctx.send(embed=embed) 
+
+
+@bot.command(pass_context=True)
+async def necro(ctx):
+    embed = discord.Embed(title="*Dies*")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://c.tenor.com/1AhUNYnySx4AAAAd/f-bi-raid.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+async def boromir(ctx):
+    embed = discord.Embed(title="I like ShakeSphere")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://c.tenor.com/TdItfEi6pxUAAAAC/marachime-lotr.gif")
+    await ctx.send(embed=embed)
+
+
+@bot.command(pass_context=True)
+@commands.is_nsfw()
+async def porn(ctx):
+    embed = discord.Embed(title="Sike")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://c.tenor.com/QA6mPKs100UAAAAC/caught-in.gif")
+    await ctx.send(embed=embed)
+
+    
+@bot.command(pass_context=True)
+@commands.is_nsfw()
+async def cum(ctx):
+    embed = discord.Embed(title="My God")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://c.tenor.com/rlmIg0fNKrEAAAAd/nut-cum.gif")
+    await ctx.send(embed=embed)    
+
+@bot.event
+async def on_command_error(ctx: commands.Context, err):
+    if isinstance(err, commands.errors.MissingRole):
+        await ctx.send("You do not have the correct role for this command :eyes:")
+    elif isinstance(err, commands.NSFWChannelRequired):
+        await ctx.send(f"Hmmm... seems like this isnt a NSFW channel {ctx.author.mention}. You want to see it but others may not.")
+    else:
+        await ctx.send(", ".join(err.args))
+
+        
+@bot.command(pass_context=True)
+@commands.is_nsfw()
+async def hentai(ctx):
+    embed = discord.Embed(title="Okay horny person")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://thehentaigif.com/wp-content/uploads/2020/10/18832626-64.gif")
+    await ctx.send(embed=embed)
+    
+    
+@bot.command(pass_context=True)
+@commands.is_nsfw()
+async def gag(ctx):
+    embed = discord.Embed(title="Okay horny person")
+
+    embed.set_footer(text="Made and powered by OMB")
+    embed.set_image(
+        url="https://thehentaigif.com/wp-content/uploads/2020/10/8109122-28.gif")
+    await ctx.send(embed=embed)  
+    
+    
+    
+@bot.command(pass_context=True)
+async def userinfo(ctx, user: discord.Member):
+    embed = discord.Embed(title="{}'s Info".format(user.name), description="Here's What I could Find in Discord's Database!", color=0x0072ff)
+    embed.add_field(name="Name", value=user.name)
+    embed.add_field(name="ID", value=user.id, inline=True)
+    embed.add_field(name="Status", value=user.status, inline=True)
+    embed.add_field(name="Role", value=user.top_role, inline=True)
+    embed.add_field(name="Joined At", value=user.joined_at, inline=True)
+    embed.set_thumbnail(url=user.avatar_url)
+    embed.set_footer(text="Made and powered by OMB")
+    await ctx.send(embed=embed)            
+ 
+
+@bot.command()
+async def ping(ctx):
+
+  embed = discord.Embed(
+    title="Ping",
+    description=f" {round(bot.latency * 1000)}ms"
+  )
+
+  embed.set_footer(text='Ping of BeepBoop')
+  embed.set_author(name='BeepBoop',
+  icon_url=f'{bot.user.avatar_url}')
+
+  await ctx.send(embed=embed)
+  
+  
+  
+        
+        
+
+bot.run(os.environ['token'])
